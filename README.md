@@ -45,6 +45,7 @@ HASH="$(wget -q -O - https://composer.github.io/installer.sig)"
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 php -r "if (hash_file('SHA384', 'composer-setup.php') === '$HASH') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
 sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+sudo composer install
 ```
 
 ### Dependencias Php
@@ -54,7 +55,49 @@ sudo apt-get install php-mbstring
 ```
 
 ## Uso
-En la terminal ejecuta
+- Clona los 2 repositorios necesarios
+```bash
+git clone https://github.com/MCA-99/Docker.git
+git clone https://github.com/MCA-99/Laravel_projecte_pisos.git
+```
+
+- Inicia el docker que contiene la base de datos
+(Situate en la ruta del docker-compose)
+```bash
+sudo docker-compose up -d
+```
+
+- En el proyecto de laravel remnombra .envexample por .env y editalo
+```bash
+mv .env.example .env
+nano .env
+
+DB_CONNECTION=mysql
+DB_HOST=172.19.0.1
+DB_PORT=3306
+DB_DATABASE=proyecto_pisos
+DB_USERNAME=root
+DB_PASSWORD=root
+```
+
+- Si no existe crea la base de datos "proyecto_pisos" mediante phpmyadmin
+user: root
+pass: root
+
+- Servimos el proyecto mediante artisan
 ```bash
 php artisan serve
+```
+
+- Llenamos la base de datos para el proyecto
+
+Estando en el directorio raiz del proyecto
+```bash
+php artisan migrate
+php artisan db:seed
+```
+
+- Accedemos finalmente
+```bash
+localhost:8000
 ```
